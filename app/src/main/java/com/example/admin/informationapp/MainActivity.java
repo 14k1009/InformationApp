@@ -1,6 +1,7 @@
 package com.example.admin.informationapp;
 
 import android.app.AlarmManager;
+import android.app.DatePickerDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -24,6 +25,7 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.sql.Time;
 import java.util.Calendar;
 
 
@@ -31,12 +33,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     TextView textView;
     EditText editText;
-    int hour, minute;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+//    int hour, minute;
+
+    private DatePickerDialog.OnDateSetListener settingDate;
+    private TimePickerDialog.OnTimeSetListener settingTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button bt = (Button) findViewById(R.id.settime);
         bt.setOnClickListener(this);
 
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        settingTime=new TimePickerDialog.OnTimeSetListener(){
+            @Override
+            public void onTimeSet(TimePicker v,int hour,int minute){
+                sendIntent(hour,minute);
+                finish();
+            }
+        };
+
     }
 
     @Override
@@ -64,13 +71,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 sendNotification();
                 break;
             case R.id.settime:
-                settime();
+//                settime();
+                setting();
                 break;
         }
     }
 
+    public void setting(){
+        Calendar calendar=Calendar.getInstance();
+        TimePickerDialog td=
+                new TimePickerDialog(MainActivity.this,settingTime,
+                        calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE)
+                        ,true);
+        td.show();
+    }
 
-    public void settime() {
+/*    public void settime() {
         Calendar cl = Calendar.getInstance();
         hour = cl.get(Calendar.HOUR_OF_DAY);
         minute = cl.get(Calendar.MINUTE);
@@ -82,15 +98,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }, hour, minute, true);
         dialog.show();
-        sendIntent(hour,minute);
         }
-
+*/
 
     public void sendIntent(int hour, int minute) {
         Calendar triggerTime = Calendar.getInstance();
         triggerTime.set(Calendar.HOUR,hour);
         triggerTime.set(Calendar.MINUTE,minute);
         Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+        intent.putExtra("text",textView.getText());
         PendingIntent sender =
                 PendingIntent.getBroadcast(MainActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -121,4 +137,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         nm.notify(1, n);
         finish();
     }
+
+
+
+ /*   class Setteing implements View.OnClickListener{
+        @Override
+        public void onClick(View v){
+            CompleteSetting setT=new CompleteSetting();
+
+        }
+    }
+
+    class CompleteSetting implements android.content.DialogInterface.OnClickListener{
+        @Override
+        public void onClick(DialogInterface s, int t){
+            sendIntent(hour,minute);
+        }
+    }*/
 }
