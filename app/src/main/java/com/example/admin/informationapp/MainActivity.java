@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     TextView textView;
     EditText editText;
-//    int hour, minute;
 
     private DatePickerDialog.OnDateSetListener settingDate;
     private TimePickerDialog.OnTimeSetListener settingTime;
@@ -71,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 sendNotification();
                 break;
             case R.id.settime:
-//                settime();
                 setting();
                 break;
         }
@@ -86,24 +84,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         td.show();
     }
 
-/*    public void settime() {
-        Calendar cl = Calendar.getInstance();
-        hour = cl.get(Calendar.HOUR_OF_DAY);
-        minute = cl.get(Calendar.MINUTE);
-        TimePickerDialog dialog = new TimePickerDialog(
-                this, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hour, int minute) {
-                Log.d("test", String.format("%02:%02d", hour, minute));
-            }
-        }, hour, minute, true);
-        dialog.show();
-        }
-*/
+
 
     public void sendIntent(int hour, int minute) {
         Calendar triggerTime = Calendar.getInstance();
-        triggerTime.set(Calendar.HOUR,hour);
+        triggerTime.set(Calendar.HOUR_OF_DAY,hour);
         triggerTime.set(Calendar.MINUTE,minute);
         Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
         intent.putExtra("text",textView.getText());
@@ -138,20 +123,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         finish();
     }
 
-
-
- /*   class Setteing implements View.OnClickListener{
-        @Override
-        public void onClick(View v){
-            CompleteSetting setT=new CompleteSetting();
-
-        }
-    }
-
-    class CompleteSetting implements android.content.DialogInterface.OnClickListener{
-        @Override
-        public void onClick(DialogInterface s, int t){
-            sendIntent(hour,minute);
-        }
-    }*/
 }
